@@ -3,18 +3,14 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 
-column = 2
-strings=True
-removeother=True
-title = "Future Direction"
-filename = "D:\\Downloads\\MappingTableCleaned.tsv"
+filename = "owid-covid-data.csv"
 
 fields = [] 
 rows = []
 mydict = None
 
 with open(filename, 'r', encoding='utf') as csvfile: 
-    csvreader = csv.reader(csvfile, delimiter="\t")
+    csvreader = csv.reader(csvfile)
     fields = next(csvreader) 
 
     i = 0
