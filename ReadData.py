@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 from keras.models import Sequential, Model
 from keras.layers import Dense, Input
 
-filename = "owid-covid-data.csv"
+filename = "owid-covid-data-new.csv"
 
 data = pd.read_csv(filename)
 
