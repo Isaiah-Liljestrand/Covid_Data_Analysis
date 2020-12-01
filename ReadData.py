@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from keras.models import Sequential, Model
-from keras.layers import Dense, Input
+from keras.models import Sequential
+from keras.layers import Dense
 
 filename = "owid-covid-data.csv"
 
@@ -32,14 +32,21 @@ X_train, X_test, Y_train, Y_test = train_test_split(perfectdata, Y, test_size = 
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
+print(X_test.shape)
 
-input_layer = Input(shape=(perfectdata.shape[1],))
-dense_layer_1 = Dense(100, activation='relu')(input_layer)
-dense_layer_2 = Dense(50, activation='relu')(dense_layer_1)
-dense_layer_3 = Dense(25, activation='relu')(dense_layer_2)
-output = Dense(1)(dense_layer_3)
+model = Sequential()
+model.add(Dense(100, activation="relu", input_dim = X_train.shape[1]))
+model.add(Dense(50, activation="relu"))
+model.add(Dense(10, activation="relu"))
+model.add(Dense(Y_train.shape[0], activation="softmax"))
+model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 
-model = Model(inputs=input_layer, outputs=output)
-model.compile(loss="mean_squared_error" , optimizer="adam", metrics=["mean_squared_error"])
+model.fit(X_train, Y_train, validation_data=(X_test, Y_test), verbose = 1, epochs = 20, shuffle=True)
+predicted_valid_labels = np.argmax(model.predict(X_test), axis=1)
+valid_labels = np.argmax(Y_test, axis=1)
 
-history = model.fit(X_train, Y_train, batch_size=2, epochs=100, verbose=1, validation_split=0.2)
+test_range = len(valid_labels)
+for k in range(0, test_range):
+    if(predicted_valid_labels[k] == valid_labels[k]):
+        sum = sum + 1
+print("Accuracy = ", sum / test_range)
