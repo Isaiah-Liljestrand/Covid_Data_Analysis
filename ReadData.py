@@ -27,7 +27,7 @@ perfectdata = selecteddata[-selecteddata.isnull().any(axis=1)]
 print(perfectdata)
 Y = perfectdata.pop("total_deaths")
 
-X_train, X_test, Y_train, Y_test = train_test_split(perfectdata, Y, test_size = 0.2)
+X_train, X_test, Y_train, Y_test = train_test_split(perfectdata, Y, test_size = 0.2, random_state=42)
 
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
