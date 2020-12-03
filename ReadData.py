@@ -7,6 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from keras.models import Sequential, Model
 from keras.layers import Dense, Input
+from numpy.random import seed
+seed(1)
+from tensorflow.random import set_seed
+set_seed(2)
 
 filename = "owid-covid-data-new.csv"
 
