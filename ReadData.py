@@ -7,10 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from keras.models import Sequential, Model
 from keras.layers import Dense, Input
-from numpy.random import seed
-seed(1)
-from tensorflow.random import set_seed
-set_seed(2)
+from numpy.random import randint
+
 
 filename = "owid-covid-data-new.csv"
 
@@ -29,21 +27,30 @@ print(len(selecteddata["total_cases"]) - sum(selecteddata.isnull().any(axis=1)))
 perfectdata = selecteddata[-selecteddata.isnull().any(axis=1)]
 
 print(perfectdata)
-Y = perfectdata.pop("total_deaths")
+Y = perfectdata.pop("total_cases")
 
 X_train, X_test, Y_train, Y_test = train_test_split(perfectdata, Y, test_size = 0.2, random_state=42)
-
+print(Y_test)
+print(Y_test.iloc(0)[0])
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 input_layer = Input(shape=(perfectdata.shape[1],))
-dense_layer_1 = Dense(100, activation='relu')(input_layer)
-dense_layer_2 = Dense(50, activation='relu')(dense_layer_1)
-dense_layer_3 = Dense(25, activation='relu')(dense_layer_2)
+dense_layer_1 = Dense(200, activation='relu')(input_layer)
+dense_layer_2 = Dense(125, activation='relu')(dense_layer_1)
+dense_layer_3 = Dense(50, activation='relu')(dense_layer_2)
 output = Dense(1)(dense_layer_3)
 
 model = Model(inputs=input_layer, outputs=output)
 model.compile(loss="mean_squared_error" , optimizer="adam", metrics=["mean_squared_error"])
 
-history = model.fit(X_train, Y_train, batch_size=2, epochs=100, verbose=1, validation_split=0.2)
+history = model.fit(X_train, Y_train, batch_size=2, epochs=80, verbose=1, validation_split=0.2)
+
+
+test_range = len(Y_test)
+for i in range(100):
+    selectedvar = randint(test_range)
+    print("Y = ", Y_test.to_numpy()[selectedvar])
+    prediction = model.predict(X_test)[selectedvar]
+    print("Prediction = ", prediction, "\n")
